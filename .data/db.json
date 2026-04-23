@@ -1,0 +1,278 @@
+{
+  "users": [],
+  "rounds": [
+    {
+      "id": "da3308cd-7d82-4908-8673-05a1c6975756",
+      "round_number": 1,
+      "vault_cap": 10000,
+      "profit_percentage": 30,
+      "current_amount": 0,
+      "status": "active",
+      "bot_count": 0,
+      "started_at": "2026-04-23T07:54:28.382Z",
+      "filled_at": null,
+      "paid_at": null,
+      "created_at": "2026-04-23T07:54:28.381Z"
+    }
+  ],
+  "buys": [],
+  "transactions": [],
+  "settings": [
+    {
+      "id": 1,
+      "setting_key": "min_buy_amount",
+      "setting_value": "50",
+      "description": "Minimum buy amount in KES",
+      "updated_at": "2026-04-23T07:54:28.304Z"
+    },
+    {
+      "id": 2,
+      "setting_key": "max_buy_amount",
+      "setting_value": "5000",
+      "description": "Maximum buy amount in KES",
+      "updated_at": "2026-04-23T07:54:28.304Z"
+    },
+    {
+      "id": 3,
+      "setting_key": "default_vault_cap",
+      "setting_value": "10000",
+      "description": "Default vault cap for new rounds",
+      "updated_at": "2026-04-23T07:54:28.304Z"
+    },
+    {
+      "id": 4,
+      "setting_key": "default_profit_percentage",
+      "setting_value": "30",
+      "description": "Default profit percentage for new rounds",
+      "updated_at": "2026-04-23T07:54:28.304Z"
+    },
+    {
+      "id": 5,
+      "setting_key": "min_withdrawal",
+      "setting_value": "100",
+      "description": "Minimum withdrawal amount",
+      "updated_at": "2026-04-23T07:54:28.304Z"
+    },
+    {
+      "id": 6,
+      "setting_key": "max_withdrawal",
+      "setting_value": "70000",
+      "description": "Maximum withdrawal amount",
+      "updated_at": "2026-04-23T07:54:28.304Z"
+    }
+  ],
+  "bot_names": [
+    {
+      "id": 1,
+      "first_name": "James",
+      "last_name": "Mwangi",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 2,
+      "first_name": "Mary",
+      "last_name": "Wanjiku",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 3,
+      "first_name": "John",
+      "last_name": "Kamau",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 4,
+      "first_name": "Grace",
+      "last_name": "Njeri",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 5,
+      "first_name": "Peter",
+      "last_name": "Ochieng",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 6,
+      "first_name": "Faith",
+      "last_name": "Akinyi",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 7,
+      "first_name": "David",
+      "last_name": "Kipchoge",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 8,
+      "first_name": "Sarah",
+      "last_name": "Chebet",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 9,
+      "first_name": "Michael",
+      "last_name": "Otieno",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 10,
+      "first_name": "Lucy",
+      "last_name": "Muthoni",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 11,
+      "first_name": "Joseph",
+      "last_name": "Karanja",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 12,
+      "first_name": "Esther",
+      "last_name": "Wambui",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 13,
+      "first_name": "Daniel",
+      "last_name": "Kipruto",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 14,
+      "first_name": "Ann",
+      "last_name": "Moraa",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 15,
+      "first_name": "Samuel",
+      "last_name": "Wekesa",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 16,
+      "first_name": "Joyce",
+      "last_name": "Adhiambo",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 17,
+      "first_name": "Patrick",
+      "last_name": "Mutua",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 18,
+      "first_name": "Caroline",
+      "last_name": "Nyambura",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 19,
+      "first_name": "George",
+      "last_name": "Omondi",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 20,
+      "first_name": "Agnes",
+      "last_name": "Kemunto",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 21,
+      "first_name": "Brian",
+      "last_name": "Kosgei",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 22,
+      "first_name": "Mercy",
+      "last_name": "Chepkoech",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 23,
+      "first_name": "Kevin",
+      "last_name": "Muchiri",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 24,
+      "first_name": "Beatrice",
+      "last_name": "Wangari",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 25,
+      "first_name": "Collins",
+      "last_name": "Rotich",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 26,
+      "first_name": "Winnie",
+      "last_name": "Auma",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 27,
+      "first_name": "Dennis",
+      "last_name": "Ndungu",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 28,
+      "first_name": "Sharon",
+      "last_name": "Jepkosgei",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 29,
+      "first_name": "Felix",
+      "last_name": "Musyoka",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 30,
+      "first_name": "Nancy",
+      "last_name": "Nyawira",
+      "used_count": 0,
+      "is_active": true
+    }
+  ],
+  "withdrawal_requests": [],
+  "_round_counter": 1
+}
