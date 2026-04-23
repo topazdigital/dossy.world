@@ -290,9 +290,11 @@ export default function GamePage() {
             transition={{ delay: 0.4 }}
             className="mt-8 text-center"
           >
-            <Button variant="ghost" className="text-muted-foreground">
-              <History className="mr-2 size-4" />
-              View Your History
+            <Button variant="ghost" className="text-muted-foreground" asChild>
+              <a href="/history">
+                <History className="mr-2 size-4" />
+                View Your History
+              </a>
             </Button>
           </motion.div>
         )}
