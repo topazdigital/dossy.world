@@ -1,5 +1,6 @@
-// Bot system for Dossy World
-// Creates realistic-looking activity in the game
+// Smart Bot System for Dossy World
+// Bots are always active when there are few users
+// They back off when many real users are investing
 
 import { v4 as uuidv4 } from 'uuid'
 import { 
@@ -7,49 +8,61 @@ import {
   createBuy, 
   getRandomBotName, 
   findUserByUsername,
-  type User,
-  type Round
+  getSetting,
+  type User
 } from './db'
 import { hashPassword } from './auth'
 
-// Bot configuration
-const BOT_CONFIG = {
-  minBuyAmount: 50,
-  maxBuyAmount: 2000,
-  minDelayMs: 3000,   // 3 seconds minimum between buys
-  maxDelayMs: 30000,  // 30 seconds maximum between buys
-  burstChance: 0.1,   // 10% chance of burst activity
-  burstMinBuys: 3,
-  burstMaxBuys: 6
+// Track last bot action time to prevent spam
+let lastBotActionTime = 0
+const MIN_BOT_INTERVAL_MS = 2000 // Minimum 2 seconds between bot actions
+
+// Bot configuration based on activity level
+const BOT_CONFIGS = {
+  low: {
+    minBuyAmount: 50,
+    maxBuyAmount: 500,
+    actionChance: 0.1, // 10% chance per tick
+    maxBotsPerTick: 1
+  },
+  medium: {
+    minBuyAmount: 100,
+    maxBuyAmount: 1000,
+    actionChance: 0.25, // 25% chance per tick
+    maxBotsPerTick: 2
+  },
+  high: {
+    minBuyAmount: 200,
+    maxBuyAmount: 2000,
+    actionChance: 0.4, // 40% chance per tick
+    maxBotsPerTick: 3
+  }
 }
 
-// Generate random buy amount
-function randomBuyAmount(): number {
-  // Weight towards smaller amounts (more realistic)
+// Generate random buy amount with realistic distribution
+function randomBuyAmount(min: number, max: number): number {
   const random = Math.random()
   let amount: number
   
   if (random < 0.5) {
-    // 50% chance: small buys (50-200)
-    amount = 50 + Math.floor(Math.random() * 150)
+    // 50% chance: small buys (lower third)
+    const range = (max - min) / 3
+    amount = min + Math.floor(Math.random() * range)
   } else if (random < 0.8) {
-    // 30% chance: medium buys (200-500)
-    amount = 200 + Math.floor(Math.random() * 300)
+    // 30% chance: medium buys (middle third)
+    const range = (max - min) / 3
+    amount = min + range + Math.floor(Math.random() * range)
   } else if (random < 0.95) {
-    // 15% chance: larger buys (500-1000)
-    amount = 500 + Math.floor(Math.random() * 500)
+    // 15% chance: larger buys (upper third)
+    const range = (max - min) / 3
+    amount = min + (range * 2) + Math.floor(Math.random() * range)
   } else {
-    // 5% chance: big buys (1000-2000)
-    amount = 1000 + Math.floor(Math.random() * 1000)
+    // 5% chance: big buys (near max)
+    amount = max - Math.floor(Math.random() * (max - min) * 0.1)
   }
   
   // Round to nearest 10
   return Math.round(amount / 10) * 10
-}
-
-// Generate random delay between bot actions
-function randomDelay(): number {
-  return BOT_CONFIG.minDelayMs + Math.floor(Math.random() * (BOT_CONFIG.maxDelayMs - BOT_CONFIG.minDelayMs))
 }
 
 // Create or get a bot user
@@ -60,7 +73,7 @@ async function getOrCreateBot(): Promise<User | null> {
   const username = `${botName.first_name.toLowerCase()}_${botName.last_name.toLowerCase()}_${Math.floor(Math.random() * 1000)}`
   
   // Check if username exists
-  let existingUser = await findUserByUsername(username)
+  const existingUser = await findUserByUsername(username)
   if (existingUser && existingUser.is_bot) {
     return existingUser
   }
@@ -70,7 +83,7 @@ async function getOrCreateBot(): Promise<User | null> {
     username,
     email: null,
     phone: null,
-    password_hash: await hashPassword(uuidv4()), // Random password (bots don't login)
+    password_hash: await hashPassword(uuidv4()),
     is_admin: false,
     is_bot: true
   })
@@ -80,7 +93,6 @@ async function getOrCreateBot(): Promise<User | null> {
 
 // Get display name for a bot
 export function getBotDisplayName(username: string): string {
-  // Convert username like "james_mwangi_123" to "James M."
   const parts = username.split('_')
   if (parts.length >= 2) {
     const firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1)
@@ -90,71 +102,8 @@ export function getBotDisplayName(username: string): string {
   return username
 }
 
-// Schedule bot buys for a round
-export interface BotBuy {
-  delay: number
-  amount: number
-  botUser: User
-}
-
-export async function scheduleBotBuys(round: Round, botCount: number): Promise<BotBuy[]> {
-  if (botCount <= 0) return []
-  
-  const scheduledBuys: BotBuy[] = []
-  const remainingCap = round.vault_cap - round.current_amount
-  
-  // Calculate how much room we have for bot buys (max 50% of remaining)
-  const maxBotTotal = remainingCap * 0.5
-  let currentBotTotal = 0
-  
-  // Distribute buys across the bots
-  const buysPerBot = Math.ceil(Math.random() * 3) + 1 // 1-4 buys per bot
-  let cumulativeDelay = 0
-  
-  for (let i = 0; i < botCount; i++) {
-    const botUser = await getOrCreateBot()
-    if (!botUser) continue
-    
-    const numBuys = Math.ceil(Math.random() * buysPerBot)
-    
-    for (let j = 0; j < numBuys; j++) {
-      if (currentBotTotal >= maxBotTotal) break
-      
-      const amount = randomBuyAmount()
-      if (currentBotTotal + amount > maxBotTotal) break
-      
-      cumulativeDelay += randomDelay()
-      
-      scheduledBuys.push({
-        delay: cumulativeDelay,
-        amount,
-        botUser
-      })
-      
-      currentBotTotal += amount
-    }
-    
-    if (currentBotTotal >= maxBotTotal) break
-  }
-  
-  // Shuffle the scheduled buys for more randomness
-  for (let i = scheduledBuys.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [scheduledBuys[i], scheduledBuys[j]] = [scheduledBuys[j], scheduledBuys[i]]
-  }
-  
-  // Reassign delays after shuffle
-  let newDelay = 0
-  for (const buy of scheduledBuys) {
-    newDelay += randomDelay()
-    buy.delay = newDelay
-  }
-  
-  return scheduledBuys
-}
-
 // Execute a single bot buy
-export async function executeBotBuy(roundId: string, amount: number, botUser: User) {
+async function executeBotBuy(roundId: string, amount: number, botUser: User): Promise<boolean> {
   try {
     await createBuy({
       round_id: roundId,
@@ -162,7 +111,6 @@ export async function executeBotBuy(roundId: string, amount: number, botUser: Us
       amount,
       is_bot_buy: true
     })
-    
     return true
   } catch (error) {
     console.error('Bot buy error:', error)
@@ -170,21 +118,102 @@ export async function executeBotBuy(roundId: string, amount: number, botUser: Us
   }
 }
 
-// Burst activity - multiple quick buys
+/**
+ * Smart bot system that adjusts activity based on real user count
+ * - When few real users: bots are very active to fill the vault
+ * - When many real users: bots back off and let users fill naturally
+ * - Bots never take payouts (they're just for activity simulation)
+ */
+export async function triggerSmartBots(
+  roundId: string, 
+  realUserCount: number,
+  currentFillPercent: number
+): Promise<number> {
+  // Check if bots are enabled
+  const botsEnabled = (await getSetting('bots_enabled')) === 'true'
+  if (!botsEnabled) return 0
+  
+  // Respect minimum interval between bot actions
+  const now = Date.now()
+  if (now - lastBotActionTime < MIN_BOT_INTERVAL_MS) {
+    return 0
+  }
+  
+  // Get bot activity level setting
+  const activityLevel = (await getSetting('bot_activity_level') || 'medium') as keyof typeof BOT_CONFIGS
+  const config = BOT_CONFIGS[activityLevel] || BOT_CONFIGS.medium
+  
+  // Get threshold for reducing bot activity
+  const minUsersForReduction = parseInt(await getSetting('min_real_users_for_bot_reduction') || '5')
+  
+  // Calculate bot activity multiplier based on real user count
+  let activityMultiplier = 1.0
+  if (realUserCount >= minUsersForReduction) {
+    // Reduce bot activity as more real users join
+    activityMultiplier = Math.max(0.1, 1 - (realUserCount - minUsersForReduction) * 0.15)
+  } else if (realUserCount === 0) {
+    // No real users - bots are more active
+    activityMultiplier = 1.5
+  }
+  
+  // Also reduce bot activity as vault fills up (let users finish it)
+  if (currentFillPercent > 80) {
+    activityMultiplier *= 0.3 // 70% reduction near the end
+  } else if (currentFillPercent > 60) {
+    activityMultiplier *= 0.6 // 40% reduction after 60%
+  }
+  
+  // Calculate effective action chance
+  const effectiveChance = config.actionChance * activityMultiplier
+  
+  // Random check if bots should act this tick
+  if (Math.random() > effectiveChance) {
+    return 0
+  }
+  
+  // Determine how many bots will act
+  const numBots = Math.ceil(Math.random() * config.maxBotsPerTick * activityMultiplier)
+  let successfulBuys = 0
+  
+  for (let i = 0; i < numBots; i++) {
+    const botUser = await getOrCreateBot()
+    if (!botUser) continue
+    
+    const amount = randomBuyAmount(config.minBuyAmount, config.maxBuyAmount)
+    const success = await executeBotBuy(roundId, amount, botUser)
+    
+    if (success) {
+      successfulBuys++
+      lastBotActionTime = Date.now()
+    }
+    
+    // Small delay between multiple bot buys
+    if (i < numBots - 1) {
+      await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 500))
+    }
+  }
+  
+  return successfulBuys
+}
+
+/**
+ * Burst activity - triggered for excitement during filling phase
+ * Used sparingly for dramatic effect
+ */
 export async function triggerBotBurst(roundId: string): Promise<number> {
-  const numBuys = BOT_CONFIG.burstMinBuys + Math.floor(Math.random() * (BOT_CONFIG.burstMaxBuys - BOT_CONFIG.burstMinBuys))
+  const numBuys = 3 + Math.floor(Math.random() * 4) // 3-6 buys
   let successfulBuys = 0
   
   for (let i = 0; i < numBuys; i++) {
     const botUser = await getOrCreateBot()
     if (!botUser) continue
     
-    const amount = randomBuyAmount()
+    const amount = randomBuyAmount(100, 1500)
     const success = await executeBotBuy(roundId, amount, botUser)
     if (success) successfulBuys++
     
-    // Small delay between burst buys
-    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000))
+    // Quick succession for burst
+    await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 400))
   }
   
   return successfulBuys

@@ -16,120 +16,111 @@ import {
   RefreshCw,
   History,
   Trophy,
-  ChevronRight
+  ChevronRight,
+  Clock
 } from 'lucide-react'
 
-interface RoundData {
-  id: string
-  round_number: number
-  vault_cap: number
-  profit_percentage: number
-  current_amount: number
-  status: 'waiting' | 'active' | 'filled' | 'paying' | 'paid' | 'cancelled'
-  bot_count: number
-  started_at: string | null
-  filled_at: string | null
-  countdown?: number // seconds until next round starts
-  buys: Array<{
+interface GameState {
+  phase: 'waiting' | 'filling' | 'eruption' | 'paused'
+  phaseStartedAt: string
+  vaultFillPercent: number
+  totalInvested: number
+  vaultTarget: number
+  investorCount: number
+  isPaused: boolean
+  waitingTimeRemaining: number
+  roundId: string | null
+  roundNumber: number
+  profitPercentage: number
+  recentInvestments: Array<{
     id: string
-    user_id: string
+    username: string
     amount: number
-    is_bot_buy: boolean
-    created_at: string
-    user?: {
-      username: string
-    }
+    isBot: boolean
+    createdAt: string
   }>
+  serverTime: number
 }
-
-const COUNTDOWN_DURATION = 30 // 30 seconds between rounds
 
 export default function GamePage() {
   const { user, isLoading: authLoading, refreshUser } = useAuth()
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showDepositModal, setShowDepositModal] = useState(false)
   const [showWithdrawModal, setShowWithdrawModal] = useState(false)
-  const [roundData, setRoundData] = useState<RoundData | null>(null)
+  const [gameState, setGameState] = useState<GameState | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [countdown, setCountdown] = useState(0)
-  const [lastStatus, setLastStatus] = useState<string | null>(null)
+  const [lastPhase, setLastPhase] = useState<string | null>(null)
 
-  const fetchRoundData = useCallback(async () => {
+  // Fetch synchronized game state
+  const fetchGameState = useCallback(async () => {
     try {
-      const response = await fetch('/api/game/current-round')
+      const response = await fetch('/api/game/state')
       if (response.ok) {
         const data = await response.json()
-        const round = data.round
         
-        // Check for status transitions
-        if (round && lastStatus !== round.status) {
-          // When vault fills, start countdown for payout
-          if (round.status === 'filled' && lastStatus === 'active') {
-            // Auto-trigger payout (in production this would be server-side)
-            fetch('/api/game/auto-payout', { method: 'POST' })
+        // Check for phase transitions
+        if (data.phase && lastPhase !== data.phase) {
+          // Refresh user balance on eruption (payouts)
+          if (data.phase === 'waiting' && lastPhase === 'eruption') {
+            refreshUser()
           }
-          
-          // When round is paid, start countdown for next round
-          if (round.status === 'paid' || round.status === 'waiting') {
-            if (lastStatus === 'paying' || lastStatus === 'filled') {
-              setCountdown(COUNTDOWN_DURATION)
-            }
-          }
-          
-          setLastStatus(round.status)
+          setLastPhase(data.phase)
         }
         
-        setRoundData(round)
-        
-        // Refresh user balance when payouts happen
-        if (round?.status === 'paid' && lastStatus === 'paying') {
-          refreshUser()
-        }
+        setGameState(data)
       }
     } catch (error) {
-      console.error('Failed to fetch round data:', error)
+      console.error('Failed to fetch game state:', error)
     }
-  }, [lastStatus, refreshUser])
+  }, [lastPhase, refreshUser])
 
-  // Initial fetch and polling
+  // Tick the game forward (triggers phase transitions)
+  const tickGame = useCallback(async () => {
+    try {
+      await fetch('/api/game/state', { method: 'POST', body: JSON.stringify({}) })
+    } catch (error) {
+      console.error('Game tick failed:', error)
+    }
+  }, [])
+
+  // Initial fetch and polling - ALL browsers see the same state
   useEffect(() => {
-    fetchRoundData()
-    const interval = setInterval(fetchRoundData, 2000) // Poll every 2 seconds
-    return () => clearInterval(interval)
-  }, [fetchRoundData])
-  
-  // Countdown timer effect
-  useEffect(() => {
-    if (countdown <= 0) return
+    fetchGameState()
     
-    const timer = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          // When countdown ends, trigger new round
-          fetch('/api/game/start-round', { method: 'POST' })
-            .then(() => fetchRoundData())
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
+    // Poll every second for real-time sync
+    const stateInterval = setInterval(fetchGameState, 1000)
     
-    return () => clearInterval(timer)
-  }, [countdown, fetchRoundData])
+    // Tick game every 2 seconds to progress phases
+    const tickInterval = setInterval(tickGame, 2000)
+    
+    return () => {
+      clearInterval(stateInterval)
+      clearInterval(tickInterval)
+    }
+  }, [fetchGameState, tickGame])
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
-    await fetchRoundData()
+    await fetchGameState()
     setIsRefreshing(false)
   }
 
-  const feedItems: FeedItem[] = (roundData?.buys || []).map(buy => ({
-    id: buy.id,
-    username: buy.user?.username || 'Unknown',
-    amount: buy.amount,
-    isBot: buy.is_bot_buy,
-    createdAt: buy.created_at
+  const feedItems: FeedItem[] = (gameState?.recentInvestments || []).map(inv => ({
+    id: inv.id,
+    username: inv.username,
+    amount: inv.amount,
+    isBot: inv.isBot,
+    createdAt: inv.createdAt
   }))
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-KE', {
+      style: 'currency',
+      currency: 'KES',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount)
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -158,6 +149,15 @@ export default function GamePage() {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Live indicator */}
+            <div className="hidden items-center gap-2 rounded-full bg-[var(--neon-green)]/10 px-3 py-1 text-xs text-[var(--neon-green)] sm:flex">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-[var(--neon-green)] opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-[var(--neon-green)]" />
+              </span>
+              LIVE
+            </div>
+
             <Button
               variant="ghost"
               size="icon"
@@ -190,7 +190,7 @@ export default function GamePage() {
       {/* Main content */}
       <main className="relative z-10 mx-auto max-w-7xl px-4 py-8">
         {/* Round info banner */}
-        {roundData && (
+        {gameState && (
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -201,30 +201,40 @@ export default function GamePage() {
                 <Trophy className="size-5 text-[var(--neon-cyan)]" />
               </div>
               <div>
-                <p className="text-muted-foreground text-xs">Current Round</p>
-                <p className="text-lg font-bold">Round #{roundData.round_number}</p>
+                <p className="text-muted-foreground text-xs">Round</p>
+                <p className="text-lg font-bold">#{gameState.roundNumber || '—'}</p>
               </div>
             </div>
             
             <div className="flex items-center gap-6 text-center">
               <div>
                 <p className="text-muted-foreground text-xs">Target</p>
-                <p className="font-semibold">KES {roundData.vault_cap.toLocaleString()}</p>
+                <p className="font-semibold">{formatCurrency(gameState.vaultTarget)}</p>
               </div>
               <div>
                 <p className="text-muted-foreground text-xs">Profit</p>
-                <p className="font-semibold text-[var(--neon-green)]">+{roundData.profit_percentage}%</p>
+                <p className="font-semibold text-[var(--neon-green)]">+{gameState.profitPercentage}%</p>
               </div>
               <div>
-                <p className="text-muted-foreground text-xs">Status</p>
+                <p className="text-muted-foreground text-xs">Phase</p>
                 <p className={`font-semibold capitalize ${
-                  roundData.status === 'active' ? 'text-[var(--neon-green)]' :
-                  roundData.status === 'filled' ? 'text-[var(--neon-cyan)]' :
-                  'text-muted-foreground'
+                  gameState.phase === 'waiting' ? 'text-[var(--neon-green)]' :
+                  gameState.phase === 'filling' ? 'text-[var(--neon-cyan)]' :
+                  gameState.phase === 'eruption' ? 'neon-text' :
+                  'text-[var(--warning)]'
                 }`}>
-                  {roundData.status}
+                  {gameState.phase === 'waiting' ? 'Accepting' : gameState.phase}
                 </p>
               </div>
+              {gameState.phase === 'waiting' && gameState.waitingTimeRemaining > 0 && (
+                <div>
+                  <p className="text-muted-foreground text-xs">Closes In</p>
+                  <p className="flex items-center gap-1 font-semibold text-[var(--neon-green)]">
+                    <Clock className="size-3" />
+                    {gameState.waitingTimeRemaining}s
+                  </p>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
@@ -238,18 +248,19 @@ export default function GamePage() {
             transition={{ delay: 0.1 }}
             className="flex flex-col items-center"
           >
-            {roundData ? (
+            {gameState ? (
               <VaultAnimation
-                currentAmount={roundData.current_amount}
-                vaultCap={roundData.vault_cap}
-                profitPercentage={roundData.profit_percentage}
-                status={roundData.status}
-                participantCount={roundData.buys?.length || 0}
-                countdown={countdown}
+                phase={gameState.phase}
+                fillPercent={gameState.vaultFillPercent}
+                totalInvested={gameState.totalInvested}
+                vaultTarget={gameState.vaultTarget}
+                profitPercentage={gameState.profitPercentage}
+                investorCount={gameState.investorCount}
+                waitingTimeRemaining={gameState.waitingTimeRemaining}
               />
             ) : (
               <div className="flex size-72 items-center justify-center rounded-full border-2 border-dashed border-[var(--border)]">
-                <p className="text-muted-foreground">Loading...</p>
+                <p className="text-muted-foreground">Connecting...</p>
               </div>
             )}
           </motion.div>
@@ -262,12 +273,16 @@ export default function GamePage() {
               transition={{ delay: 0.2 }}
             >
               <BuyPanel
-                roundId={roundData?.id || null}
-                roundStatus={roundData?.status || 'waiting'}
-                profitPercentage={roundData?.profit_percentage || 30}
+                roundId={gameState?.roundId || null}
+                phase={gameState?.phase || 'paused'}
+                profitPercentage={gameState?.profitPercentage || 30}
                 minBuy={50}
                 maxBuy={5000}
-                onBuySuccess={fetchRoundData}
+                waitingTimeRemaining={gameState?.waitingTimeRemaining || 0}
+                onBuySuccess={() => {
+                  fetchGameState()
+                  refreshUser()
+                }}
                 onLoginRequired={() => setShowAuthModal(true)}
               />
             </motion.div>
@@ -282,18 +297,57 @@ export default function GamePage() {
           </div>
         </div>
 
+        {/* How it works section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mt-12"
+        >
+          <h2 className="mb-6 text-center text-xl font-bold">How It Works</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="bg-card/30 rounded-xl border border-[var(--border)] p-4 text-center">
+              <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-[var(--neon-green)]/20">
+                <span className="text-xl font-bold text-[var(--neon-green)]">1</span>
+              </div>
+              <h3 className="mb-2 font-semibold">Invest</h3>
+              <p className="text-muted-foreground text-sm">
+                During the &quot;Accepting&quot; phase, invest any amount between KES 50 - 5,000
+              </p>
+            </div>
+            <div className="bg-card/30 rounded-xl border border-[var(--border)] p-4 text-center">
+              <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-[var(--neon-cyan)]/20">
+                <span className="text-xl font-bold text-[var(--neon-cyan)]">2</span>
+              </div>
+              <h3 className="mb-2 font-semibold">Watch</h3>
+              <p className="text-muted-foreground text-sm">
+                The vault fills with investments. When it reaches 100%, it erupts!
+              </p>
+            </div>
+            <div className="bg-card/30 rounded-xl border border-[var(--border)] p-4 text-center">
+              <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-[var(--neon-purple)]/20">
+                <span className="text-xl font-bold text-[var(--neon-purple)]">3</span>
+              </div>
+              <h3 className="mb-2 font-semibold">Profit</h3>
+              <p className="text-muted-foreground text-sm">
+                When the vault erupts, everyone gets their investment back + 30% profit!
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
         {/* History link for logged-in users */}
         {user && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.5 }}
             className="mt-8 text-center"
           >
             <Button variant="ghost" className="text-muted-foreground" asChild>
               <a href="/history">
                 <History className="mr-2 size-4" />
-                View Your History
+                View Your Investment History
               </a>
             </Button>
           </motion.div>
@@ -307,7 +361,7 @@ export default function GamePage() {
             &copy; {new Date().getFullYear()} Dossy World. All rights reserved.
           </p>
           <p className="text-muted-foreground mt-1 text-xs">
-            Play responsibly. Must be 18+ to participate.
+            Invest responsibly. Must be 18+ to participate.
           </p>
         </div>
       </footer>

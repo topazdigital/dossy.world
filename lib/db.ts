@@ -23,16 +23,35 @@ export interface User {
   updated_at: string
 }
 
+// NEW: Global game state that syncs across all clients
+export interface GameState {
+  id: number
+  current_round_id: string | null
+  phase: 'waiting' | 'filling' | 'eruption' | 'paused'
+  phase_started_at: string
+  vault_fill_percent: number
+  total_invested: number
+  vault_target: number
+  investor_count: number
+  next_eruption_target: number
+  is_paused: boolean
+  last_tick_at: string
+}
+
 export interface Round {
   id: string
   round_number: number
-  vault_cap: number
+  vault_target: number
   profit_percentage: number
-  current_amount: number
-  status: 'waiting' | 'active' | 'filled' | 'paying' | 'paid' | 'cancelled'
-  bot_count: number
-  started_at: string | null
-  filled_at: string | null
+  total_invested: number
+  final_fill_percent: number
+  status: 'active' | 'completed' | 'cancelled'
+  investor_count: number
+  bot_investor_count: number
+  real_investor_count: number
+  total_payout: number
+  started_at: string
+  erupted_at: string | null
   paid_at: string | null
   created_at: string
 }
@@ -43,15 +62,18 @@ export interface Buy {
   user_id: string
   amount: number
   payout_amount: number | null
+  payout_multiplier: number | null
   is_paid: boolean
   is_bot_buy: boolean
+  invested_at_percent: number
   created_at: string
+  paid_at: string | null
 }
 
 export interface Transaction {
   id: string
   user_id: string
-  type: 'deposit' | 'withdrawal' | 'buy' | 'payout' | 'refund' | 'admin_credit' | 'admin_debit'
+  type: 'deposit' | 'withdrawal' | 'invest' | 'payout' | 'refund' | 'admin_credit' | 'admin_debit'
   amount: number
   balance_after: number
   status: 'pending' | 'completed' | 'failed' | 'cancelled'
@@ -95,6 +117,7 @@ export interface WithdrawalRequest {
 
 interface Database {
   users: User[]
+  game_state: GameState
   rounds: Round[]
   buys: Buy[]
   transactions: Transaction[]
@@ -104,18 +127,38 @@ interface Database {
   _round_counter: number
 }
 
+const DEFAULT_GAME_STATE: GameState = {
+  id: 1,
+  current_round_id: null,
+  phase: 'waiting',
+  phase_started_at: new Date().toISOString(),
+  vault_fill_percent: 0,
+  total_invested: 0,
+  vault_target: 10000,
+  investor_count: 0,
+  next_eruption_target: 100,
+  is_paused: false,
+  last_tick_at: new Date().toISOString()
+}
+
 const DEFAULT_DB: Database = {
   users: [],
+  game_state: DEFAULT_GAME_STATE,
   rounds: [],
   buys: [],
   transactions: [],
   settings: [
-    { id: 1, setting_key: 'min_buy_amount', setting_value: '50', description: 'Minimum buy amount in KES', updated_at: new Date().toISOString() },
-    { id: 2, setting_key: 'max_buy_amount', setting_value: '5000', description: 'Maximum buy amount in KES', updated_at: new Date().toISOString() },
-    { id: 3, setting_key: 'default_vault_cap', setting_value: '10000', description: 'Default vault cap for new rounds', updated_at: new Date().toISOString() },
-    { id: 4, setting_key: 'default_profit_percentage', setting_value: '30', description: 'Default profit percentage for new rounds', updated_at: new Date().toISOString() },
+    { id: 1, setting_key: 'min_invest_amount', setting_value: '50', description: 'Minimum investment amount in KES', updated_at: new Date().toISOString() },
+    { id: 2, setting_key: 'max_invest_amount', setting_value: '5000', description: 'Maximum investment amount in KES', updated_at: new Date().toISOString() },
+    { id: 3, setting_key: 'default_vault_target', setting_value: '10000', description: 'Default vault target for new rounds', updated_at: new Date().toISOString() },
+    { id: 4, setting_key: 'default_profit_percentage', setting_value: '30', description: 'Default profit percentage for payouts', updated_at: new Date().toISOString() },
     { id: 5, setting_key: 'min_withdrawal', setting_value: '100', description: 'Minimum withdrawal amount', updated_at: new Date().toISOString() },
     { id: 6, setting_key: 'max_withdrawal', setting_value: '70000', description: 'Maximum withdrawal amount', updated_at: new Date().toISOString() },
+    { id: 7, setting_key: 'waiting_duration_seconds', setting_value: '5', description: 'Seconds to wait before filling starts', updated_at: new Date().toISOString() },
+    { id: 8, setting_key: 'bots_enabled', setting_value: 'true', description: 'Enable bot investors', updated_at: new Date().toISOString() },
+    { id: 9, setting_key: 'bot_activity_level', setting_value: 'medium', description: 'Bot activity level: low, medium, high', updated_at: new Date().toISOString() },
+    { id: 10, setting_key: 'min_real_users_for_bot_reduction', setting_value: '5', description: 'Reduce bot activity when this many real users are investing', updated_at: new Date().toISOString() },
+    { id: 11, setting_key: 'system_paused', setting_value: 'false', description: 'Pause the entire system', updated_at: new Date().toISOString() },
   ],
   bot_names: [
     { id: 1, first_name: 'James', last_name: 'Mwangi', used_count: 0, is_active: true },
@@ -165,7 +208,12 @@ async function readDB(): Promise<Database> {
   await ensureDataDir()
   try {
     const data = await fs.readFile(DB_FILE, 'utf-8')
-    return JSON.parse(data) as Database
+    const db = JSON.parse(data) as Database
+    // Ensure game_state exists for existing databases
+    if (!db.game_state) {
+      db.game_state = DEFAULT_GAME_STATE
+    }
+    return db
   } catch {
     await fs.writeFile(DB_FILE, JSON.stringify(DEFAULT_DB, null, 2))
     return DEFAULT_DB
@@ -177,7 +225,37 @@ async function writeDB(db: Database): Promise<void> {
   await fs.writeFile(DB_FILE, JSON.stringify(db, null, 2))
 }
 
-// User operations
+// =====================================================
+// GAME STATE OPERATIONS (NEW)
+// =====================================================
+
+export async function getGameState(): Promise<GameState> {
+  const db = await readDB()
+  return db.game_state
+}
+
+export async function updateGameState(data: Partial<GameState>): Promise<GameState> {
+  const db = await readDB()
+  db.game_state = { ...db.game_state, ...data, last_tick_at: new Date().toISOString() }
+  await writeDB(db)
+  return db.game_state
+}
+
+export async function resetGameState(): Promise<GameState> {
+  const db = await readDB()
+  db.game_state = {
+    ...DEFAULT_GAME_STATE,
+    phase_started_at: new Date().toISOString(),
+    last_tick_at: new Date().toISOString()
+  }
+  await writeDB(db)
+  return db.game_state
+}
+
+// =====================================================
+// USER OPERATIONS
+// =====================================================
+
 export async function createUser(data: {
   username: string
   email?: string | null
@@ -229,17 +307,14 @@ export async function findUserById(id: string): Promise<User | null> {
 }
 
 export async function findUserByIdentifier(identifier: string): Promise<User | null> {
-  // Try username first
   let user = await findUserByUsername(identifier)
   if (user) return user
   
-  // Try email
   if (identifier.includes('@')) {
     user = await findUserByEmail(identifier)
     if (user) return user
   }
   
-  // Try phone
   user = await findUserByPhone(identifier)
   return user
 }
@@ -271,11 +346,13 @@ export async function getAllUsers(includeBotsAdmin = false): Promise<User[]> {
   return db.users.filter(u => !u.is_bot && !u.is_admin)
 }
 
-// Round operations
+// =====================================================
+// ROUND OPERATIONS
+// =====================================================
+
 export async function createRound(data: {
-  vault_cap: number
+  vault_target: number
   profit_percentage: number
-  bot_count?: number
 }): Promise<Round> {
   const db = await readDB()
   
@@ -284,34 +361,40 @@ export async function createRound(data: {
   const round: Round = {
     id: uuidv4(),
     round_number: db._round_counter,
-    vault_cap: data.vault_cap,
+    vault_target: data.vault_target,
     profit_percentage: data.profit_percentage,
-    current_amount: 0,
-    status: 'waiting',
-    bot_count: data.bot_count || 0,
-    started_at: null,
-    filled_at: null,
+    total_invested: 0,
+    final_fill_percent: 0,
+    status: 'active',
+    investor_count: 0,
+    bot_investor_count: 0,
+    real_investor_count: 0,
+    total_payout: 0,
+    started_at: new Date().toISOString(),
+    erupted_at: null,
     paid_at: null,
     created_at: new Date().toISOString()
   }
   
   db.rounds.push(round)
+  
+  // Update game state to point to this round
+  db.game_state.current_round_id = round.id
+  db.game_state.phase = 'waiting'
+  db.game_state.phase_started_at = new Date().toISOString()
+  db.game_state.vault_fill_percent = 0
+  db.game_state.total_invested = 0
+  db.game_state.vault_target = data.vault_target
+  db.game_state.investor_count = 0
+  
   await writeDB(db)
   return round
 }
 
-export async function getActiveRound(): Promise<Round | null> {
-  const db = await readDB()
-  return db.rounds.find(r => r.status === 'active' || r.status === 'waiting') || null
-}
-
 export async function getCurrentRound(): Promise<Round | null> {
   const db = await readDB()
-  // Get the most recent non-cancelled round
-  const sortedRounds = [...db.rounds]
-    .filter(r => r.status !== 'cancelled')
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-  return sortedRounds[0] || null
+  if (!db.game_state.current_round_id) return null
+  return db.rounds.find(r => r.id === db.game_state.current_round_id) || null
 }
 
 export async function getRoundById(id: string): Promise<Round | null> {
@@ -334,14 +417,28 @@ export async function getAllRounds(): Promise<Round[]> {
   return [...db.rounds].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 }
 
-// Buy operations
+export async function getCompletedRounds(limit = 10): Promise<Round[]> {
+  const db = await readDB()
+  return db.rounds
+    .filter(r => r.status === 'completed')
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, limit)
+}
+
+// =====================================================
+// BUY (INVESTMENT) OPERATIONS
+// =====================================================
+
 export async function createBuy(data: {
   round_id: string
   user_id: string
   amount: number
   is_bot_buy?: boolean
-}): Promise<Buy> {
+}): Promise<Buy | null> {
   const db = await readDB()
+  
+  // Get current fill percent at time of investment
+  const currentFillPercent = db.game_state.vault_fill_percent
   
   const buy: Buy = {
     id: uuidv4(),
@@ -349,24 +446,36 @@ export async function createBuy(data: {
     user_id: data.user_id,
     amount: data.amount,
     payout_amount: null,
+    payout_multiplier: null,
     is_paid: false,
     is_bot_buy: data.is_bot_buy || false,
-    created_at: new Date().toISOString()
+    invested_at_percent: currentFillPercent,
+    created_at: new Date().toISOString(),
+    paid_at: null
   }
   
   db.buys.push(buy)
   
-  // Update round amount
+  // Update round totals
   const roundIndex = db.rounds.findIndex(r => r.id === data.round_id)
   if (roundIndex !== -1) {
-    db.rounds[roundIndex].current_amount += data.amount
-    
-    // Check if vault is filled
-    if (db.rounds[roundIndex].current_amount >= db.rounds[roundIndex].vault_cap) {
-      db.rounds[roundIndex].status = 'filled'
-      db.rounds[roundIndex].filled_at = new Date().toISOString()
+    db.rounds[roundIndex].total_invested += data.amount
+    db.rounds[roundIndex].investor_count += 1
+    if (data.is_bot_buy) {
+      db.rounds[roundIndex].bot_investor_count += 1
+    } else {
+      db.rounds[roundIndex].real_investor_count += 1
     }
   }
+  
+  // Update game state
+  db.game_state.total_invested += data.amount
+  db.game_state.investor_count += 1
+  db.game_state.vault_fill_percent = Math.min(
+    (db.game_state.total_invested / db.game_state.vault_target) * 100,
+    100
+  )
+  db.game_state.last_tick_at = new Date().toISOString()
   
   await writeDB(db)
   return buy
@@ -389,6 +498,11 @@ export async function getBuysByUser(userId: string): Promise<Buy[]> {
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 }
 
+export async function getUnpaidBuysByRound(roundId: string): Promise<Buy[]> {
+  const db = await readDB()
+  return db.buys.filter(b => b.round_id === roundId && !b.is_paid && !b.is_bot_buy)
+}
+
 export async function updateBuy(id: string, data: Partial<Buy>): Promise<Buy | null> {
   const db = await readDB()
   const index = db.buys.findIndex(b => b.id === id)
@@ -399,7 +513,15 @@ export async function updateBuy(id: string, data: Partial<Buy>): Promise<Buy | n
   return db.buys[index]
 }
 
-// Transaction operations
+export async function getRealUserCountInRound(roundId: string): Promise<number> {
+  const db = await readDB()
+  return db.buys.filter(b => b.round_id === roundId && !b.is_bot_buy).length
+}
+
+// =====================================================
+// TRANSACTION OPERATIONS
+// =====================================================
+
 export async function createTransaction(data: {
   user_id: string
   type: Transaction['type']
@@ -459,7 +581,10 @@ export async function findTransactionByCheckoutId(checkoutId: string): Promise<T
   return db.transactions.find(t => t.mpesa_checkout_id === checkoutId) || null
 }
 
-// Settings operations
+// =====================================================
+// SETTINGS OPERATIONS
+// =====================================================
+
 export async function getSetting(key: string): Promise<string | null> {
   const db = await readDB()
   const setting = db.settings.find(s => s.setting_key === key)
@@ -493,7 +618,10 @@ export async function getAllSettings(): Promise<Setting[]> {
   return db.settings
 }
 
-// Bot names operations
+// =====================================================
+// BOT NAMES OPERATIONS
+// =====================================================
+
 export async function getRandomBotName(): Promise<BotName | null> {
   const db = await readDB()
   const activeNames = db.bot_names.filter(bn => bn.is_active)
@@ -502,7 +630,6 @@ export async function getRandomBotName(): Promise<BotName | null> {
   const randomIndex = Math.floor(Math.random() * activeNames.length)
   const botName = activeNames[randomIndex]
   
-  // Update used count
   const index = db.bot_names.findIndex(bn => bn.id === botName.id)
   db.bot_names[index].used_count++
   await writeDB(db)
@@ -515,7 +642,10 @@ export async function getAllBotNames(): Promise<BotName[]> {
   return db.bot_names
 }
 
-// Withdrawal requests
+// =====================================================
+// WITHDRAWAL REQUESTS
+// =====================================================
+
 export async function createWithdrawalRequest(data: {
   user_id: string
   amount: number
@@ -566,13 +696,18 @@ export async function updateWithdrawalRequest(id: string, data: Partial<Withdraw
   return db.withdrawal_requests[index]
 }
 
-// Stats
+// =====================================================
+// STATS
+// =====================================================
+
 export async function getStats() {
   const db = await readDB()
   
   const totalUsers = db.users.filter(u => !u.is_bot && !u.is_admin).length
-  const totalRounds = db.rounds.length
-  const activeRound = db.rounds.find(r => r.status === 'active' || r.status === 'waiting')
+  const totalRounds = db.rounds.filter(r => r.status === 'completed').length
+  const currentRound = db.game_state.current_round_id 
+    ? db.rounds.find(r => r.id === db.game_state.current_round_id) 
+    : null
   const pendingWithdrawals = db.withdrawal_requests.filter(r => r.status === 'pending').length
   
   const totalVolume = db.buys
@@ -597,7 +732,8 @@ export async function getStats() {
   return {
     totalUsers,
     totalRounds,
-    activeRound,
+    currentRound,
+    gameState: db.game_state,
     pendingWithdrawals,
     totalVolume,
     todayVolume,
