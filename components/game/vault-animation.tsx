@@ -1,8 +1,8 @@
 "use client"
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect, useState } from 'react'
-import { Sparkles, TrendingUp, Clock, Users } from 'lucide-react'
+import { useEffect, useState, useCallback } from 'react'
+import { Sparkles, TrendingUp, Clock, Users, Timer } from 'lucide-react'
 
 interface VaultAnimationProps {
   currentAmount: number
@@ -10,6 +10,8 @@ interface VaultAnimationProps {
   profitPercentage: number
   status: 'waiting' | 'active' | 'filled' | 'paying' | 'paid' | 'cancelled'
   participantCount: number
+  countdown?: number // seconds remaining for countdown phase
+  onCountdownEnd?: () => void
 }
 
 export function VaultAnimation({ 
@@ -17,11 +19,37 @@ export function VaultAnimation({
   vaultCap, 
   profitPercentage,
   status,
-  participantCount
+  participantCount,
+  countdown = 0,
+  onCountdownEnd
 }: VaultAnimationProps) {
   const fillPercentage = Math.min((currentAmount / vaultCap) * 100, 100)
   const isFilled = status === 'filled' || status === 'paying' || status === 'paid'
+  const isWaiting = status === 'waiting' || status === 'paid' || status === 'paying'
   const [showCelebration, setShowCelebration] = useState(false)
+  const [localCountdown, setLocalCountdown] = useState(countdown)
+  
+  // Handle countdown timer
+  useEffect(() => {
+    setLocalCountdown(countdown)
+  }, [countdown])
+  
+  useEffect(() => {
+    if (localCountdown <= 0 || !isWaiting) return
+    
+    const timer = setInterval(() => {
+      setLocalCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(timer)
+          onCountdownEnd?.()
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+    
+    return () => clearInterval(timer)
+  }, [localCountdown, isWaiting, onCountdownEnd])
 
   useEffect(() => {
     if (isFilled && fillPercentage >= 100) {
@@ -183,6 +211,62 @@ export function VaultAnimation({
         </motion.div>
       </div>
 
+      {/* Countdown Timer - shown between rounds */}
+      <AnimatePresence>
+        {isWaiting && localCountdown > 0 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="bg-card/80 mb-6 rounded-2xl border border-[var(--neon-purple)]/50 px-8 py-4 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-4">
+              <Timer className="size-6 text-[var(--neon-purple)]" />
+              <div className="text-center">
+                <p className="text-muted-foreground text-xs uppercase tracking-wider">Next Round In</p>
+                <motion.p 
+                  className="neon-text text-4xl font-bold tabular-nums"
+                  key={localCountdown}
+                  initial={{ scale: 1.3 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {localCountdown}s
+                </motion.p>
+              </div>
+              <div className="h-12 w-12">
+                <svg viewBox="0 0 36 36" className="-rotate-90">
+                  <circle
+                    cx="18" cy="18" r="16"
+                    fill="none"
+                    stroke="var(--border)"
+                    strokeWidth="3"
+                  />
+                  <motion.circle
+                    cx="18" cy="18" r="16"
+                    fill="none"
+                    stroke="url(#countdownGradient)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeDasharray="100.5"
+                    animate={{ 
+                      strokeDashoffset: 100.5 - (100.5 * localCountdown / 30)
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+                  <defs>
+                    <linearGradient id="countdownGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="var(--neon-purple)" />
+                      <stop offset="100%" stopColor="var(--neon-cyan)" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Stats row */}
       <div className="flex w-full max-w-md justify-center gap-4">
         <motion.div 
@@ -211,11 +295,23 @@ export function VaultAnimation({
           className="bg-card/50 flex items-center gap-2 rounded-lg border border-[var(--border)] px-4 py-2"
           whileHover={{ scale: 1.05, borderColor: 'var(--neon-purple)' }}
         >
-          <Clock className="size-4 text-[var(--neon-purple)]" />
-          <div>
-            <p className="text-muted-foreground text-[10px] uppercase">Status</p>
-            <p className="text-sm font-bold capitalize">{status}</p>
-          </div>
+          {isWaiting && localCountdown > 0 ? (
+            <>
+              <Timer className="size-4 text-[var(--warning)]" />
+              <div>
+                <p className="text-muted-foreground text-[10px] uppercase">Starting</p>
+                <p className="text-sm font-bold text-[var(--warning)]">{localCountdown}s</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <Clock className="size-4 text-[var(--neon-purple)]" />
+              <div>
+                <p className="text-muted-foreground text-[10px] uppercase">Status</p>
+                <p className="text-sm font-bold capitalize">{status}</p>
+              </div>
+            </>
+          )}
         </motion.div>
       </div>
     </div>

@@ -29,6 +29,7 @@ interface RoundData {
   bot_count: number
   started_at: string | null
   filled_at: string | null
+  countdown?: number // seconds until next round starts
   buys: Array<{
     id: string
     user_id: string
@@ -41,25 +42,54 @@ interface RoundData {
   }>
 }
 
+const COUNTDOWN_DURATION = 30 // 30 seconds between rounds
+
 export default function GamePage() {
-  const { user, isLoading: authLoading } = useAuth()
+  const { user, isLoading: authLoading, refreshUser } = useAuth()
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showDepositModal, setShowDepositModal] = useState(false)
   const [showWithdrawModal, setShowWithdrawModal] = useState(false)
   const [roundData, setRoundData] = useState<RoundData | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [countdown, setCountdown] = useState(0)
+  const [lastStatus, setLastStatus] = useState<string | null>(null)
 
   const fetchRoundData = useCallback(async () => {
     try {
       const response = await fetch('/api/game/current-round')
       if (response.ok) {
         const data = await response.json()
-        setRoundData(data.round)
+        const round = data.round
+        
+        // Check for status transitions
+        if (round && lastStatus !== round.status) {
+          // When vault fills, start countdown for payout
+          if (round.status === 'filled' && lastStatus === 'active') {
+            // Auto-trigger payout (in production this would be server-side)
+            fetch('/api/game/auto-payout', { method: 'POST' })
+          }
+          
+          // When round is paid, start countdown for next round
+          if (round.status === 'paid' || round.status === 'waiting') {
+            if (lastStatus === 'paying' || lastStatus === 'filled') {
+              setCountdown(COUNTDOWN_DURATION)
+            }
+          }
+          
+          setLastStatus(round.status)
+        }
+        
+        setRoundData(round)
+        
+        // Refresh user balance when payouts happen
+        if (round?.status === 'paid' && lastStatus === 'paying') {
+          refreshUser()
+        }
       }
     } catch (error) {
       console.error('Failed to fetch round data:', error)
     }
-  }, [])
+  }, [lastStatus, refreshUser])
 
   // Initial fetch and polling
   useEffect(() => {
@@ -67,6 +97,25 @@ export default function GamePage() {
     const interval = setInterval(fetchRoundData, 2000) // Poll every 2 seconds
     return () => clearInterval(interval)
   }, [fetchRoundData])
+  
+  // Countdown timer effect
+  useEffect(() => {
+    if (countdown <= 0) return
+    
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          // When countdown ends, trigger new round
+          fetch('/api/game/start-round', { method: 'POST' })
+            .then(() => fetchRoundData())
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+    
+    return () => clearInterval(timer)
+  }, [countdown, fetchRoundData])
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
@@ -196,6 +245,7 @@ export default function GamePage() {
                 profitPercentage={roundData.profit_percentage}
                 status={roundData.status}
                 participantCount={roundData.buys?.length || 0}
+                countdown={countdown}
               />
             ) : (
               <div className="flex size-72 items-center justify-center rounded-full border-2 border-dashed border-[var(--border)]">
@@ -240,9 +290,11 @@ export default function GamePage() {
             transition={{ delay: 0.4 }}
             className="mt-8 text-center"
           >
-            <Button variant="ghost" className="text-muted-foreground">
-              <History className="mr-2 size-4" />
-              View Your History
+            <Button variant="ghost" className="text-muted-foreground" asChild>
+              <a href="/history">
+                <History className="mr-2 size-4" />
+                View Your History
+              </a>
             </Button>
           </motion.div>
         )}
