@@ -26,3 +26,13 @@ externalPort = 80
 [[ports]]
 localPort = 22733
 externalPort = 3000
+
+[userenv]
+
+[userenv.shared]
+DB_HOST = "localhost"
+DB_PORT = "3306"
+DB_USER = "admin_dossy"
+DB_NAME = "admin_dossy"
+NODE_ENV = "production"
+APP_BASE_URL = "https://dossy.world"
