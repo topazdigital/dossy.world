@@ -158,6 +158,17 @@ const DEFAULT_DB: Database = {
     { id: 9, setting_key: 'nofill_bot_target_min_pct', setting_value: '50', description: 'Min % of cap bots will push a no-fill vault to.', updated_at: new Date().toISOString() },
     { id: 10, setting_key: 'nofill_bot_target_max_pct', setting_value: '80', description: 'Max % of cap bots will push a no-fill vault to.', updated_at: new Date().toISOString() },
     { id: 11, setting_key: 'payout_cooldown_seconds', setting_value: '5', description: 'Seconds between vault eruption and auto-payout.', updated_at: new Date().toISOString() },
+    { id: 16, setting_key: 'google_client_id', setting_value: '', description: 'Google OAuth 2.0 Client ID from Google Cloud Console.', updated_at: new Date().toISOString() },
+    { id: 17, setting_key: 'google_client_secret', setting_value: '', description: 'Google OAuth 2.0 Client Secret. Stored securely.', updated_at: new Date().toISOString() },
+    { id: 18, setting_key: 'payhero_basic_auth', setting_value: '', description: 'PayHero Basic Auth token (Base64 username:password from PayHero dashboard).', updated_at: new Date().toISOString() },
+    { id: 19, setting_key: 'payhero_channel_id', setting_value: '', description: 'PayHero Channel ID linking payments to your M-Pesa till.', updated_at: new Date().toISOString() },
+    { id: 20, setting_key: 'payhero_till_number', setting_value: '', description: 'M-Pesa till/paybill number shown to users during deposit.', updated_at: new Date().toISOString() },
+    { id: 21, setting_key: 'payhero_callback_url', setting_value: '', description: 'Override PayHero callback URL (leave blank to auto-build from APP_BASE_URL).', updated_at: new Date().toISOString() },
+    { id: 22, setting_key: 'whatsapp_group_url', setting_value: '', description: 'WhatsApp community group invite link shown as floating button.', updated_at: new Date().toISOString() },
+    { id: 23, setting_key: 'btc_deposit_address', setting_value: '', description: 'Bitcoin (BTC) deposit wallet address.', updated_at: new Date().toISOString() },
+    { id: 24, setting_key: 'usdt_trc20_address', setting_value: '', description: 'USDT TRC20 (Tron) deposit wallet address.', updated_at: new Date().toISOString() },
+    { id: 25, setting_key: 'usdt_bep20_address', setting_value: '', description: 'USDT BEP20 (BSC) deposit wallet address.', updated_at: new Date().toISOString() },
+    { id: 26, setting_key: 'app_base_url', setting_value: '', description: 'Public base URL of this app (e.g. https://dossy.world). Used for OAuth callbacks.', updated_at: new Date().toISOString() },
   ],
   bot_names: [
     { id: 1, first_name: 'James', last_name: 'Mwangi', used_count: 0, is_active: true },
@@ -203,12 +214,30 @@ async function ensureDataDir() {
   }
 }
 
+async function ensureDefaultSettings(db: Database): Promise<boolean> {
+  let dirty = false
+  for (const def of DEFAULT_DB.settings) {
+    if (!db.settings.find(s => s.setting_key === def.setting_key)) {
+      db.settings.push({ ...def })
+      dirty = true
+    }
+  }
+  return dirty
+}
+
 async function readDB(): Promise<Database> {
   await ensureDataDir()
   try {
     const data = await fs.readFile(DB_FILE, 'utf-8')
     const db = JSON.parse(data) as Database
+    // Ensure all top-level collections exist (handles seeded DBs missing some fields)
+    if (!Array.isArray(db.bot_names)) db.bot_names = JSON.parse(JSON.stringify(DEFAULT_DB.bot_names))
+    if (!Array.isArray(db.withdrawal_requests)) db.withdrawal_requests = []
+    if (!Array.isArray(db.audit_logs)) db.audit_logs = []
+    if (typeof db._round_counter !== 'number') db._round_counter = 0
     await ensureDefaultAdmin(db)
+    const needsWrite = await ensureDefaultSettings(db)
+    if (needsWrite) await fs.writeFile(DB_FILE, JSON.stringify(db, null, 2))
     return db
   } catch {
     await fs.writeFile(DB_FILE, JSON.stringify(DEFAULT_DB, null, 2))

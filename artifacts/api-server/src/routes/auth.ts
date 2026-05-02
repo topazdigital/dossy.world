@@ -98,8 +98,11 @@ router.post('/auth/logout', async (req, res) => {
   return res.json({ success: true })
 })
 
-router.get('/auth/google-status', (_req, res) => {
-  return res.json({ enabled: Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) })
+router.get('/auth/google-status', async (_req, res) => {
+  const { getSetting } = await import('../lib/db.js')
+  const clientId = (await getSetting('google_client_id')) || process.env.GOOGLE_CLIENT_ID || ''
+  const clientSecret = (await getSetting('google_client_secret')) || process.env.GOOGLE_CLIENT_SECRET || ''
+  return res.json({ enabled: Boolean(clientId && clientSecret) })
 })
 
 router.get('/auth/me', async (req, res) => {

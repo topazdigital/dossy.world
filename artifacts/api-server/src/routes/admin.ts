@@ -185,11 +185,20 @@ router.post('/admin/round/control', async (req, res) => {
   }
 })
 
+const SENSITIVE_KEYS = new Set(['google_client_secret', 'payhero_basic_auth'])
+const MASKED = '__MASKED__'
+
 router.get('/admin/settings', async (req, res) => {
   try {
     await requireAdmin(req)
     const settings = await getAllSettings()
-    return res.json({ settings })
+    const safe = settings.map(s => ({
+      ...s,
+      setting_value: SENSITIVE_KEYS.has(s.setting_key) && s.setting_value
+        ? MASKED
+        : s.setting_value,
+    }))
+    return res.json({ settings: safe })
   } catch (err: unknown) {
     if (err instanceof Error && err.message.includes('Unauthorized')) return res.status(401).json({ error: 'Unauthorized' })
     req.log.error(err)
@@ -204,13 +213,13 @@ router.post('/admin/settings', async (req, res) => {
     if (!settings || typeof settings !== 'object') return res.status(400).json({ error: 'Invalid settings' })
     const changed: Record<string, string> = {}
     for (const [key, value] of Object.entries(settings)) {
-      if (typeof value === 'string' && value.trim()) {
+      if (typeof value === 'string' && value !== MASKED) {
         await setSetting(key, value)
-        changed[key] = value
+        changed[key] = SENSITIVE_KEYS.has(key) ? '[updated]' : value
       }
     }
     await recordAudit({ admin_id: admin.id, admin_username: admin.username, action: 'settings.update', target_type: 'settings', target_id: null, details: { changed } })
-    return res.json({ success: true, message: 'Settings updated' })
+    return res.json({ success: true, message: 'Settings saved successfully' })
   } catch (err: unknown) {
     if (err instanceof Error && err.message.includes('Unauthorized')) return res.status(401).json({ error: 'Unauthorized' })
     req.log.error(err)
