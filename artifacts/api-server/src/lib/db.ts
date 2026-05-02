@@ -298,10 +298,18 @@ export async function findUserByEmail(email: string): Promise<User | null> {
   return db.users.find(u => u.email?.toLowerCase() === email.toLowerCase()) || null
 }
 
+function normalizePhoneForLookup(phone: string): string {
+  let n = phone.replace(/\D/g, '')
+  if (n.startsWith('0')) n = '254' + n.substring(1)
+  else if (/^[71]/.test(n)) n = '254' + n
+  else if (n.startsWith('+254')) n = n.substring(1)
+  return n
+}
+
 export async function findUserByPhone(phone: string): Promise<User | null> {
   const db = await readDB()
-  const normalizedPhone = phone.replace(/\D/g, '')
-  return db.users.find(u => u.phone?.replace(/\D/g, '') === normalizedPhone) || null
+  const normalizedInput = normalizePhoneForLookup(phone)
+  return db.users.find(u => u.phone ? normalizePhoneForLookup(u.phone) === normalizedInput : false) || null
 }
 
 export async function findUserById(id: string): Promise<User | null> {

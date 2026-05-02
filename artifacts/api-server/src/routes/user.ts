@@ -7,6 +7,7 @@ import {
   getTransactionsByUser,
   getBuysByUser,
   getRoundById,
+  getActiveRoundStrict,
 } from '../lib/db.js'
 
 const router = Router()
@@ -93,6 +94,32 @@ router.get('/user/buys', async (req, res) => {
     if (err instanceof Error && err.message === 'Unauthorized') return res.status(401).json({ error: 'Unauthorized' })
     req.log.error(err)
     return res.status(500).json({ error: 'Failed to fetch buys' })
+  }
+})
+
+router.get('/user/upcoming-payout', async (req, res) => {
+  try {
+    const user = await requireAuth(req)
+    const round = await getActiveRoundStrict()
+    if (!round) return res.json({ upcoming: null })
+    const buys = await getBuysByUser(user.id)
+    const activeBuys = buys.filter(b => b.round_id === round.id)
+    if (activeBuys.length === 0) return res.json({ upcoming: null })
+    const totalStaked = activeBuys.reduce((s, b) => s + b.amount, 0)
+    const expectedPayout = Math.round(totalStaked * (1 + round.profit_percentage / 100))
+    return res.json({
+      upcoming: {
+        round_id: round.id,
+        staked: totalStaked,
+        expected_payout: expectedPayout,
+        profit_percentage: round.profit_percentage,
+        fill_percentage: Math.min(100, Math.round((round.current_amount / round.vault_cap) * 100)),
+      }
+    })
+  } catch (err: unknown) {
+    if (err instanceof Error && err.message === 'Unauthorized') return res.status(401).json({ error: 'Unauthorized' })
+    req.log.error(err)
+    return res.status(500).json({ error: 'Failed to fetch upcoming payout' })
   }
 })
 

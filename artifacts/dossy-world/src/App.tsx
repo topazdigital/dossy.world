@@ -9,6 +9,7 @@ import NotFound from "@/pages/not-found";
 import GamePage from "@/pages/GamePage";
 import HistoryPage from "@/pages/HistoryPage";
 import OpsGatewayPage from "@/pages/OpsGatewayPage";
+import CryptoPage from "@/pages/CryptoPage";
 
 import AdminLayout from "@/pages/admin/AdminLayout";
 import AdminDashboard from "@/pages/admin/DashboardPage";
@@ -35,6 +36,7 @@ function Router() {
     <Switch>
       <Route path="/" component={GamePage} />
       <Route path="/history" component={HistoryPage} />
+      <Route path="/crypto" component={CryptoPage} />
       <Route path="/ops-control-9f3a2b7c" component={OpsGatewayPage} />
       <Route path="/admin" component={() => <AdminRoute component={AdminDashboard} />} />
       <Route path="/admin/users" component={() => <AdminRoute component={AdminUsersPage} />} />

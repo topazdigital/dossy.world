@@ -98,6 +98,10 @@ router.post('/auth/logout', async (req, res) => {
   return res.json({ success: true })
 })
 
+router.get('/auth/google-status', (_req, res) => {
+  return res.json({ enabled: Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) })
+})
+
 router.get('/auth/me', async (req, res) => {
   try {
     const user = await getCurrentUser(req)
