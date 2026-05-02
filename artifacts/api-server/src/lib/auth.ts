@@ -1,10 +1,27 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
+import { randomBytes } from 'crypto'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
+import { join } from 'path'
 import type { Request, Response } from 'express'
 import { findUserById, type User } from './db.js'
 
-const JWT_SECRET = process.env.JWT_SECRET
-if (!JWT_SECRET) throw new Error('JWT_SECRET environment variable is required')
+function loadOrCreateJwtSecret(): string {
+  if (process.env.JWT_SECRET) return process.env.JWT_SECRET
+  const dir = join(process.cwd(), '.data')
+  const file = join(dir, '.jwt-secret')
+  if (existsSync(file)) {
+    const secret = readFileSync(file, 'utf-8').trim()
+    if (secret.length >= 32) return secret
+  }
+  mkdirSync(dir, { recursive: true })
+  const secret = randomBytes(64).toString('hex')
+  writeFileSync(file, secret, { mode: 0o600 })
+  console.warn('[auth] JWT_SECRET not set — generated a persistent secret and saved to .data/.jwt-secret. Set JWT_SECRET env var for production.')
+  return secret
+}
+
+const JWT_SECRET = loadOrCreateJwtSecret()
 const SESSION_SHORT_DAYS = 1
 const SESSION_LONG_DAYS = 30
 

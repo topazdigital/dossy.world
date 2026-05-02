@@ -1317,6 +1317,96 @@
       "is_banned": false,
       "created_at": "2026-05-02T13:28:14.694Z",
       "updated_at": "2026-05-02T13:28:14.694Z"
+    },
+    {
+      "id": "6543c58a-03a3-4d60-8eb8-b8ee682b74e1",
+      "username": "marywa377",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$0Y95IpYXqU8jvEq3dwoOIO5W53DjScsf/HJWkzyFdYxoFXwVAmw0m",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:33:56.536Z",
+      "updated_at": "2026-05-02T13:33:56.536Z"
+    },
+    {
+      "id": "bcd7c2cb-c3c4-490b-8b4b-58d117ad87d3",
+      "username": "dossytz4442",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$MrhW.kn22JMXsXVaS19wo.2ZP.lYv4MMCtxrdKfwK14Y.6gF9fh4S",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:34:01.143Z",
+      "updated_at": "2026-05-02T13:34:01.143Z"
+    },
+    {
+      "id": "d374e994-dc10-4b4e-a543-6915fb2d23e4",
+      "username": "mzeewa_pesa",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$JkDOEVpT6Yb2WMOf3PjX1.G17L.JKorbGNAan9pUNjq7y.djbCHgG",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:34:04.174Z",
+      "updated_at": "2026-05-02T13:34:04.174Z"
+    },
+    {
+      "id": "2dc0b6b5-5c1c-414d-aeea-120c64b96b4f",
+      "username": "estherwa542",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$XnzfSVNtBtfPURH/utrKz.2rF.WkPCMPQbykDIbdyhm4vQ7UNAele",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:34:08.688Z",
+      "updated_at": "2026-05-02T13:34:08.688Z"
+    },
+    {
+      "id": "cefc3e65-8b29-4044-97c7-79486ea1f18a",
+      "username": "bantuke",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$ayOu4y4hjasH1jBxFnTJkOctuMTju99YSyb8kXcYMVY79159Sj22O",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:34:12.223Z",
+      "updated_at": "2026-05-02T13:34:12.223Z"
+    },
+    {
+      "id": "4271d313-88a2-421a-9604-2b0ccc0a5733",
+      "username": "mafaokibaba",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$AkkVWUYhcG.P/a6XjGBHsul82oI7swBqh0ugVCF8oNR3YDO6VpgLG",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:34:15.353Z",
+      "updated_at": "2026-05-02T13:34:15.353Z"
     }
   ],
   "rounds": [
@@ -1452,12 +1542,12 @@
       "vault_cap": 10000,
       "profit_percentage": 30,
       "current_amount": 630,
-      "status": "active",
+      "status": "expired",
       "bot_count": 0,
       "will_fill": false,
       "bot_target_pct": 56,
       "expires_at": "2026-05-02T13:29:36.431Z",
-      "expired_at": null,
+      "expired_at": "2026-05-02T13:33:56.178Z",
       "started_at": "2026-05-02T13:28:06.432Z",
       "filled_at": null,
       "paid_at": null,
@@ -1466,6 +1556,27 @@
       "server_seed_hash": "09c2c65da4afb6436a62ecdb09a20ea74b03ed7f640a62cf8c55e2d875968a99",
       "client_seed": "e7e1fd7ad45d58d3",
       "fairness_nonce": 1777728486430
+    },
+    {
+      "id": "a5c0a707-a4e7-4469-a631-d3e7641ac71d",
+      "round_number": 8,
+      "vault_cap": 10000,
+      "profit_percentage": 30,
+      "current_amount": 1410,
+      "status": "active",
+      "bot_count": 0,
+      "will_fill": false,
+      "bot_target_pct": 61,
+      "expires_at": "2026-05-02T13:35:26.185Z",
+      "expired_at": null,
+      "started_at": "2026-05-02T13:33:56.187Z",
+      "filled_at": null,
+      "paid_at": null,
+      "created_at": "2026-05-02T13:33:56.186Z",
+      "server_seed": "9cada7d5b6cc19a364a91c9f1962e3a37343025ae10f58dfe9bd2faa94188c37",
+      "server_seed_hash": "f3e67d74c270b04febc6ed1c8e2865c8525b7d63cba098559ea6a26b11e16ede",
+      "client_seed": "47f3102b135b7e09",
+      "fairness_nonce": 1777728836183
     }
   ],
   "buys": [
@@ -2338,6 +2449,66 @@
       "is_paid": false,
       "is_bot_buy": true,
       "created_at": "2026-05-02T13:28:14.695Z"
+    },
+    {
+      "id": "253256f7-9ea6-469a-8eca-226ba8ffdc97",
+      "round_id": "a5c0a707-a4e7-4469-a631-d3e7641ac71d",
+      "user_id": "6543c58a-03a3-4d60-8eb8-b8ee682b74e1",
+      "amount": 60,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:33:56.538Z"
+    },
+    {
+      "id": "f45cb72c-154f-43d8-adee-fd83ba3dc109",
+      "round_id": "a5c0a707-a4e7-4469-a631-d3e7641ac71d",
+      "user_id": "bcd7c2cb-c3c4-490b-8b4b-58d117ad87d3",
+      "amount": 380,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:34:01.145Z"
+    },
+    {
+      "id": "b95fc30e-3933-433f-a4de-a29feada111b",
+      "round_id": "a5c0a707-a4e7-4469-a631-d3e7641ac71d",
+      "user_id": "d374e994-dc10-4b4e-a543-6915fb2d23e4",
+      "amount": 100,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:34:04.175Z"
+    },
+    {
+      "id": "d70e6e24-280b-4aba-8dfa-cd720a1eb226",
+      "round_id": "a5c0a707-a4e7-4469-a631-d3e7641ac71d",
+      "user_id": "2dc0b6b5-5c1c-414d-aeea-120c64b96b4f",
+      "amount": 350,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:34:08.689Z"
+    },
+    {
+      "id": "cd83b0f0-170a-433e-9b05-be81fd10c7a1",
+      "round_id": "a5c0a707-a4e7-4469-a631-d3e7641ac71d",
+      "user_id": "cefc3e65-8b29-4044-97c7-79486ea1f18a",
+      "amount": 460,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:34:12.225Z"
+    },
+    {
+      "id": "a84a5af0-37f9-4dba-b79a-f25f4ab3859e",
+      "round_id": "a5c0a707-a4e7-4469-a631-d3e7641ac71d",
+      "user_id": "4271d313-88a2-421a-9604-2b0ccc0a5733",
+      "amount": 60,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:34:15.354Z"
     }
   ],
   "transactions": [],
@@ -2446,7 +2617,7 @@
       "id": 2,
       "first_name": "Mary",
       "last_name": "Wanjiku",
-      "used_count": 1,
+      "used_count": 2,
       "is_active": true
     },
     {
@@ -2516,7 +2687,7 @@
       "id": 12,
       "first_name": "Esther",
       "last_name": "Wambui",
-      "used_count": 0,
+      "used_count": 1,
       "is_active": true
     },
     {
@@ -2647,5 +2818,5 @@
     }
   ],
   "withdrawal_requests": [],
-  "_round_counter": 7
+  "_round_counter": 8
 }
