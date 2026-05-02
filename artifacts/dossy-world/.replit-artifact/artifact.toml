@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Dossy World"
+version = "1.0.0"
+id = "artifacts/dossy-world"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22733
+
+[services.development]
+run = "pnpm --filter @workspace/dossy-world run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/dossy-world", "run", "build" ]
+publicDir = "artifacts/dossy-world/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22733"
+BASE_PATH = "/"

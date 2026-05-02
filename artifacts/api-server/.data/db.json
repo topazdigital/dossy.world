@@ -1,0 +1,871 @@
+{
+  "users": [
+    {
+      "id": "d758f3cb-8306-426e-a7d1-6cafcba2ac40",
+      "username": "admin",
+      "email": "admin@dossy.world",
+      "phone": null,
+      "password_hash": "$2b$10$vl7Jq0Q2k1mBu0TFruSgce2xLMtZ9HeoNygmDyanni2rph8n.sXg2",
+      "balance": 0,
+      "is_admin": true,
+      "is_bot": false,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:18:01.326Z",
+      "updated_at": "2026-05-02T13:18:01.326Z"
+    },
+    {
+      "id": "d329a895-0014-4139-9381-3214eb838689",
+      "username": "mtaaniwa_pesa6509",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$f.YN9gW./ZLlMVyoALht2.BO531EJcbDwTp20MtBMldHQ9zPQl/Ue",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:18:01.684Z",
+      "updated_at": "2026-05-02T13:18:01.684Z"
+    },
+    {
+      "id": "04d9da78-da3e-4154-8281-0ac9f5101d97",
+      "username": "davidki791",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$hXSNw68h3eIi/LwHTvJlbeOP0WJWT1ASR87A5LAD/GEc9KzrlfaBa",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:18:22.176Z",
+      "updated_at": "2026-05-02T13:18:22.176Z"
+    },
+    {
+      "id": "934d8533-fca5-41b6-bde9-65b62adc077c",
+      "username": "bigrich5795",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$h6FWGlImy5YT.sDQdbEePuxiHqU5NanXMbG1lTMAUBIvqWZkHx9oq",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:18:44.658Z",
+      "updated_at": "2026-05-02T13:18:44.658Z"
+    },
+    {
+      "id": "aea888e2-62e7-4f2a-83fe-2baa86b88401",
+      "username": "bigwizard",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$ghPU6IlIEWOrQxhRbFng5.xZXldEloKielDJVtMi/mA57gN9ZSFc6",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:18:48.540Z",
+      "updated_at": "2026-05-02T13:18:48.540Z"
+    },
+    {
+      "id": "ba3bd916-ab0b-4ee2-a257-32e5acb0b5c0",
+      "username": "pesagirl",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$pqxXbmleM6neoEhi6f3PVew04fYmbbZf.5m7um51T2SXmDgNZk9uq",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:18:51.538Z",
+      "updated_at": "2026-05-02T13:18:51.538Z"
+    },
+    {
+      "id": "40e28cc9-6257-4a88-b137-57655bea436d",
+      "username": "mbosssquad3780",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$Y/Tbt0VFC6tjJfiCYOm7j.5QXLVKV9NfNr.i3in1mUV3ewoeV2yoC",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:18:54.930Z",
+      "updated_at": "2026-05-02T13:18:54.930Z"
+    },
+    {
+      "id": "b6ad3164-05bb-4d2d-89e6-9319bea190cd",
+      "username": "dossyhunter",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$vaqOo8cSoEIsdO949i/JG.Tb3AzZDNDN6OO7e/4Ngm.qMieWGnKUG",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:18:59.083Z",
+      "updated_at": "2026-05-02T13:18:59.083Z"
+    },
+    {
+      "id": "50bd4129-56db-4bd4-8205-3252bdf78ce5",
+      "username": "gracenj207",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$qByr6tf/H3vEHEWSnWsoJu85uEEAaiQTkMm/8ScrQp9e1fJgDMdHy",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:03.058Z",
+      "updated_at": "2026-05-02T13:19:03.058Z"
+    },
+    {
+      "id": "a59f10d8-00ac-4179-9bce-6e9229e85b74",
+      "username": "raissquad3644",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$KRQl/RBClw/bsY9dAQRuguPH1krFSwYDcA1WRXbUnTJT7GV1Wh/Tq",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:07.302Z",
+      "updated_at": "2026-05-02T13:19:07.302Z"
+    },
+    {
+      "id": "36a7e834-0ba5-4725-a852-c510f4036726",
+      "username": "nairobi_official1465",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$HncD.WP4exrzu.kSXTeaIeqPfu.BQpABXD.YoQtGIyOwpeDNIgwCu",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:10.411Z",
+      "updated_at": "2026-05-02T13:19:10.411Z"
+    },
+    {
+      "id": "6fca9013-e4e7-47bb-a0d2-0133c89bb6b9",
+      "username": "brianko888",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$iDpWZ8LF.hKHTnS7.vtKr.SP0mi8BaJhJkZb6EYSZqx6NqKaTnLN6",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:13.314Z",
+      "updated_at": "2026-05-02T13:19:13.314Z"
+    },
+    {
+      "id": "612289f8-3d3f-4220-b47c-c75be08c2119",
+      "username": "safarislayer7601",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$i4UfcB.fNjqXZBkiT64qKOcjPJrEskb87b34.ABaSvhuOi81Kzcp6",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:16.327Z",
+      "updated_at": "2026-05-02T13:19:16.327Z"
+    },
+    {
+      "id": "2982a9e8-60f8-4dba-b289-ce632d192b4f",
+      "username": "winnieau747",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$IzbKv5/b/0xhpt5cf3Foge6nQstdv8bzd3vm0HmM0Ppui/ZP6CSGm",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:18.555Z",
+      "updated_at": "2026-05-02T13:19:18.555Z"
+    },
+    {
+      "id": "89218be4-1608-446c-aa2e-f4408380eb6e",
+      "username": "raiskibaba8054",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$kVrmxME/zPcD7QpdRl9Lce7O0vNCLKBNaARNYKChv5Egac7UKbTSO",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:22.038Z",
+      "updated_at": "2026-05-02T13:19:22.038Z"
+    },
+    {
+      "id": "03aa4ab0-57f6-4b59-8e14-455515aaead1",
+      "username": "sultanhunter2906",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$3/6UwCd0kighO51KfM4KNuKozJLE24trschNXAJ76ENO.zukmvDVq",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:32.113Z",
+      "updated_at": "2026-05-02T13:19:32.113Z"
+    },
+    {
+      "id": "88fcce4e-f63b-4c71-876e-2e2b4bfdae1a",
+      "username": "mafaojr3156",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$cGCaH3mTtbelIDh8xfWLe.QHWnFBo9CBD8qy6hCePh3BBh5rJNt4i",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:36.187Z",
+      "updated_at": "2026-05-02T13:19:36.187Z"
+    },
+    {
+      "id": "b3bc614f-1f94-4346-a36b-50e592e28939",
+      "username": "teamwa_pesa",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$sEZOKThnDFg4O92NViRhXewA6./QwQRNOdysL45Eujy3m3RIDFfvy",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:39.713Z",
+      "updated_at": "2026-05-02T13:19:39.713Z"
+    },
+    {
+      "id": "51faa2e9-4047-4df8-a476-f448280c8ac1",
+      "username": "sultan3552",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$d0rS5knuAMZLVLw7avaSferk1TbM3alAOAtpNgnvH49e.mpCa/Sce",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:42.892Z",
+      "updated_at": "2026-05-02T13:19:42.892Z"
+    },
+    {
+      "id": "e581ffb7-f681-45d5-8205-fb60b5413197",
+      "username": "bantudollar2396",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$LlxjygQFNlqOHaNl32MyZePBIVrclOFaIy/X9JDnHeiyVmfAKLTPa",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:47.336Z",
+      "updated_at": "2026-05-02T13:19:47.336Z"
+    },
+    {
+      "id": "98856fca-3253-4eef-904c-5e8c9c07da23",
+      "username": "crypto_official4107",
+      "email": null,
+      "phone": null,
+      "password_hash": "$2b$12$ypiarMDD93ISIHK3HvSvDuAowpg4zzUx9BDoyuSDQa9PtzB8HJrLO",
+      "google_id": null,
+      "avatar_url": null,
+      "balance": 0,
+      "is_admin": false,
+      "is_bot": true,
+      "is_banned": false,
+      "created_at": "2026-05-02T13:19:50.402Z",
+      "updated_at": "2026-05-02T13:19:50.402Z"
+    }
+  ],
+  "rounds": [
+    {
+      "id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "round_number": 1,
+      "vault_cap": 10000,
+      "profit_percentage": 30,
+      "current_amount": 5200,
+      "status": "expired",
+      "bot_count": 0,
+      "will_fill": false,
+      "bot_target_pct": 52,
+      "expires_at": "2026-05-02T13:19:31.335Z",
+      "expired_at": "2026-05-02T13:19:31.772Z",
+      "started_at": "2026-05-02T13:18:01.337Z",
+      "filled_at": null,
+      "paid_at": null,
+      "created_at": "2026-05-02T13:18:01.336Z",
+      "server_seed": "6870355f0d7afd948943cbdcac2e20ec6d81a7197907b59f6d4872e07222c45f",
+      "server_seed_hash": "438afcfb5239f07d12bf886af729fe6f774c0a35570bbb1d8eef3f5412119aed",
+      "client_seed": "1fa778494737a58b",
+      "fairness_nonce": 1777727881334
+    },
+    {
+      "id": "4e6daa41-26ae-4b4e-9aaa-c70c4c6ff414",
+      "round_number": 2,
+      "vault_cap": 10000,
+      "profit_percentage": 30,
+      "current_amount": 2430,
+      "status": "active",
+      "bot_count": 0,
+      "will_fill": false,
+      "bot_target_pct": 74,
+      "expires_at": "2026-05-02T13:21:01.777Z",
+      "expired_at": null,
+      "started_at": "2026-05-02T13:19:31.778Z",
+      "filled_at": null,
+      "paid_at": null,
+      "created_at": "2026-05-02T13:19:31.778Z",
+      "server_seed": "7b7e09ff295e04795de819ec1c99eddbccdd9296c81c1fed767b892cdd7e4e2a",
+      "server_seed_hash": "aa7ead80c2a84ad43136684150e2c71196e5e2efa1a7925a2d33a20cbe0d258f",
+      "client_seed": "76dd4339bc212e92",
+      "fairness_nonce": 1777727971777
+    }
+  ],
+  "buys": [
+    {
+      "id": "b9d1299d-b400-4b25-854a-8ae7d77aef52",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "d329a895-0014-4139-9381-3214eb838689",
+      "amount": 1670,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:18:01.686Z"
+    },
+    {
+      "id": "30e1ce11-e531-435c-960b-634d83677462",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "04d9da78-da3e-4154-8281-0ac9f5101d97",
+      "amount": 450,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:18:22.177Z"
+    },
+    {
+      "id": "0bd09c1a-1d05-4e81-8287-1a1b94c5bac2",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "934d8533-fca5-41b6-bde9-65b62adc077c",
+      "amount": 90,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:18:44.659Z"
+    },
+    {
+      "id": "e26749f0-bd50-4ff2-b43e-11e9aaae1bce",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "aea888e2-62e7-4f2a-83fe-2baa86b88401",
+      "amount": 80,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:18:48.542Z"
+    },
+    {
+      "id": "879060f5-98d7-4569-8a33-3ba3a5399974",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "ba3bd916-ab0b-4ee2-a257-32e5acb0b5c0",
+      "amount": 130,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:18:51.540Z"
+    },
+    {
+      "id": "fc7ec0dc-c37e-416e-8f11-09c553c525ae",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "40e28cc9-6257-4a88-b137-57655bea436d",
+      "amount": 220,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:18:54.932Z"
+    },
+    {
+      "id": "22724727-04d5-40c6-bdd3-b5e20ecdf4cf",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "b6ad3164-05bb-4d2d-89e6-9319bea190cd",
+      "amount": 820,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:18:59.084Z"
+    },
+    {
+      "id": "dafd94fc-a3f6-40e3-856a-b49ff27f10b6",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "50bd4129-56db-4bd4-8205-3252bdf78ce5",
+      "amount": 160,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:03.059Z"
+    },
+    {
+      "id": "f289fc63-6a7d-4770-a616-696d4431dd2e",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "a59f10d8-00ac-4179-9bce-6e9229e85b74",
+      "amount": 140,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:07.303Z"
+    },
+    {
+      "id": "d5597cbc-8323-43f3-9d7b-a97adc0f25d3",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "36a7e834-0ba5-4725-a852-c510f4036726",
+      "amount": 380,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:10.413Z"
+    },
+    {
+      "id": "306f6d2f-e13e-44c0-ae37-1aae9aac9abe",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "6fca9013-e4e7-47bb-a0d2-0133c89bb6b9",
+      "amount": 400,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:13.316Z"
+    },
+    {
+      "id": "5614f632-5b1e-44c1-82f3-403db9058637",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "612289f8-3d3f-4220-b47c-c75be08c2119",
+      "amount": 120,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:16.328Z"
+    },
+    {
+      "id": "834e132b-8fe6-480d-9875-f3c768ee9b44",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "2982a9e8-60f8-4dba-b289-ce632d192b4f",
+      "amount": 450,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:18.556Z"
+    },
+    {
+      "id": "3f4b126e-dbf3-4fef-8c1c-a3a7c9afca26",
+      "round_id": "953c55da-50a1-45c6-b4f0-966aa5c17e84",
+      "user_id": "89218be4-1608-446c-aa2e-f4408380eb6e",
+      "amount": 90,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:22.039Z"
+    },
+    {
+      "id": "3035c739-3fb4-4a05-8ac7-99c23d3c8981",
+      "round_id": "4e6daa41-26ae-4b4e-9aaa-c70c4c6ff414",
+      "user_id": "03aa4ab0-57f6-4b59-8e14-455515aaead1",
+      "amount": 880,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:32.115Z"
+    },
+    {
+      "id": "01f756b6-958c-4ea1-9247-9ccc9e58bf99",
+      "round_id": "4e6daa41-26ae-4b4e-9aaa-c70c4c6ff414",
+      "user_id": "88fcce4e-f63b-4c71-876e-2e2b4bfdae1a",
+      "amount": 990,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:36.188Z"
+    },
+    {
+      "id": "1e7801f7-8db0-4695-8d7c-217ef4b84821",
+      "round_id": "4e6daa41-26ae-4b4e-9aaa-c70c4c6ff414",
+      "user_id": "b3bc614f-1f94-4346-a36b-50e592e28939",
+      "amount": 60,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:39.714Z"
+    },
+    {
+      "id": "d16e7111-8b42-4530-a5f9-937b9a9a7fef",
+      "round_id": "4e6daa41-26ae-4b4e-9aaa-c70c4c6ff414",
+      "user_id": "51faa2e9-4047-4df8-a476-f448280c8ac1",
+      "amount": 150,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:42.894Z"
+    },
+    {
+      "id": "73023b32-f8ae-4cb6-8f53-7d9bbd088f15",
+      "round_id": "4e6daa41-26ae-4b4e-9aaa-c70c4c6ff414",
+      "user_id": "e581ffb7-f681-45d5-8205-fb60b5413197",
+      "amount": 160,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:47.338Z"
+    },
+    {
+      "id": "f1312323-5bce-43b6-842f-342799581fa6",
+      "round_id": "4e6daa41-26ae-4b4e-9aaa-c70c4c6ff414",
+      "user_id": "98856fca-3253-4eef-904c-5e8c9c07da23",
+      "amount": 190,
+      "payout_amount": null,
+      "is_paid": false,
+      "is_bot_buy": true,
+      "created_at": "2026-05-02T13:19:50.403Z"
+    }
+  ],
+  "transactions": [],
+  "settings": [
+    {
+      "id": 1,
+      "setting_key": "min_buy_amount",
+      "setting_value": "50",
+      "description": "Minimum buy amount in KES",
+      "updated_at": "2026-05-02T13:16:56.834Z"
+    },
+    {
+      "id": 2,
+      "setting_key": "max_buy_amount",
+      "setting_value": "5000",
+      "description": "Maximum buy amount in KES",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    },
+    {
+      "id": 3,
+      "setting_key": "default_vault_cap",
+      "setting_value": "10000",
+      "description": "Default vault cap for new rounds",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    },
+    {
+      "id": 4,
+      "setting_key": "default_profit_percentage",
+      "setting_value": "30",
+      "description": "Default profit percentage for new rounds",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    },
+    {
+      "id": 5,
+      "setting_key": "min_withdrawal",
+      "setting_value": "100",
+      "description": "Minimum withdrawal amount",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    },
+    {
+      "id": 6,
+      "setting_key": "max_withdrawal",
+      "setting_value": "70000",
+      "description": "Maximum withdrawal amount",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    },
+    {
+      "id": 7,
+      "setting_key": "house_edge_percentage",
+      "setting_value": "70",
+      "description": "Percent of vaults that secretly will not fill (no payout). Higher = house wins more often. 70 = house wins ~70% of rounds.",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    },
+    {
+      "id": 14,
+      "setting_key": "max_user_stake_pct_per_round",
+      "setting_value": "25",
+      "description": "Max % of the vault cap a single real user may stake in one round. Stops a single player from buying the whole vault. 25 = 25% of cap.",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    },
+    {
+      "id": 15,
+      "setting_key": "max_ip_stake_pct_per_round",
+      "setting_value": "40",
+      "description": "Max % of the vault cap that may be staked from any single IP address (across all accounts) per round. Soft Sybil defense.",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    },
+    {
+      "id": 8,
+      "setting_key": "vault_lifetime_seconds",
+      "setting_value": "90",
+      "description": "How long an unfilled vault lives before it silently expires.",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    },
+    {
+      "id": 9,
+      "setting_key": "nofill_bot_target_min_pct",
+      "setting_value": "50",
+      "description": "Min % of cap bots will push a no-fill vault to.",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    },
+    {
+      "id": 10,
+      "setting_key": "nofill_bot_target_max_pct",
+      "setting_value": "80",
+      "description": "Max % of cap bots will push a no-fill vault to.",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    },
+    {
+      "id": 11,
+      "setting_key": "payout_cooldown_seconds",
+      "setting_value": "5",
+      "description": "Seconds between vault eruption and auto-payout.",
+      "updated_at": "2026-05-02T13:16:56.844Z"
+    }
+  ],
+  "bot_names": [
+    {
+      "id": 1,
+      "first_name": "James",
+      "last_name": "Mwangi",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 2,
+      "first_name": "Mary",
+      "last_name": "Wanjiku",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 3,
+      "first_name": "John",
+      "last_name": "Kamau",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 4,
+      "first_name": "Grace",
+      "last_name": "Njeri",
+      "used_count": 1,
+      "is_active": true
+    },
+    {
+      "id": 5,
+      "first_name": "Peter",
+      "last_name": "Ochieng",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 6,
+      "first_name": "Faith",
+      "last_name": "Akinyi",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 7,
+      "first_name": "David",
+      "last_name": "Kipchoge",
+      "used_count": 1,
+      "is_active": true
+    },
+    {
+      "id": 8,
+      "first_name": "Sarah",
+      "last_name": "Chebet",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 9,
+      "first_name": "Michael",
+      "last_name": "Otieno",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 10,
+      "first_name": "Lucy",
+      "last_name": "Muthoni",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 11,
+      "first_name": "Joseph",
+      "last_name": "Karanja",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 12,
+      "first_name": "Esther",
+      "last_name": "Wambui",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 13,
+      "first_name": "Daniel",
+      "last_name": "Kipruto",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 14,
+      "first_name": "Ann",
+      "last_name": "Moraa",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 15,
+      "first_name": "Samuel",
+      "last_name": "Wekesa",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 16,
+      "first_name": "Joyce",
+      "last_name": "Adhiambo",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 17,
+      "first_name": "Patrick",
+      "last_name": "Mutua",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 18,
+      "first_name": "Caroline",
+      "last_name": "Nyambura",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 19,
+      "first_name": "George",
+      "last_name": "Omondi",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 20,
+      "first_name": "Agnes",
+      "last_name": "Kemunto",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 21,
+      "first_name": "Brian",
+      "last_name": "Kosgei",
+      "used_count": 1,
+      "is_active": true
+    },
+    {
+      "id": 22,
+      "first_name": "Mercy",
+      "last_name": "Chepkoech",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 23,
+      "first_name": "Kevin",
+      "last_name": "Muchiri",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 24,
+      "first_name": "Beatrice",
+      "last_name": "Wangari",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 25,
+      "first_name": "Collins",
+      "last_name": "Rotich",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 26,
+      "first_name": "Winnie",
+      "last_name": "Auma",
+      "used_count": 1,
+      "is_active": true
+    },
+    {
+      "id": 27,
+      "first_name": "Dennis",
+      "last_name": "Ndungu",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 28,
+      "first_name": "Sharon",
+      "last_name": "Jepkosgei",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 29,
+      "first_name": "Felix",
+      "last_name": "Musyoka",
+      "used_count": 0,
+      "is_active": true
+    },
+    {
+      "id": 30,
+      "first_name": "Nancy",
+      "last_name": "Nyawira",
+      "used_count": 0,
+      "is_active": true
+    }
+  ],
+  "withdrawal_requests": [],
+  "_round_counter": 2
+}
