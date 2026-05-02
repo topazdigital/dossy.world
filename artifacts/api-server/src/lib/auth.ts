@@ -3,7 +3,8 @@ import bcrypt from 'bcryptjs'
 import type { Request, Response } from 'express'
 import { findUserById, type User } from './db.js'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dossy-world-super-secret-key-change-in-production'
+const JWT_SECRET = process.env.JWT_SECRET
+if (!JWT_SECRET) throw new Error('JWT_SECRET environment variable is required')
 const SESSION_SHORT_DAYS = 1
 const SESSION_LONG_DAYS = 30
 

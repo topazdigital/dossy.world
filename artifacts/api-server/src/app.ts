@@ -27,9 +27,20 @@ app.use(
   }),
 );
 
+const ALLOWED_ORIGINS = [
+  process.env.FRONTEND_ORIGIN,
+  process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : undefined,
+].filter(Boolean) as string[];
+
 app.use(
   cors({
-    origin: true,
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (ALLOWED_ORIGINS.some((o) => origin === o || origin.endsWith(".replit.dev") || origin.endsWith(".repl.co"))) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );

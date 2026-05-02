@@ -76,15 +76,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     setError('')
   }
 
-  const handleGoogle = () => {
-    // Send the user to our OAuth start route which kicks them over to Google.
-    const params = new URLSearchParams({
-      remember: rememberMe ? '1' : '0',
-      next: '/',
-    })
-    window.location.href = `/api/auth/google?${params.toString()}`
-  }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="border-primary/20 bg-card sm:max-w-md overflow-hidden">
@@ -120,24 +111,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* Google sign-in / sign-up button */}
-          <button
-            type="button"
-            onClick={handleGoogle}
-            disabled={isLoading}
-            className="flex w-full items-center justify-center gap-3 rounded-lg border border-border/60 bg-background/40 px-4 py-2.5 text-sm font-medium transition-colors hover:bg-background/70 disabled:opacity-50"
-          >
-            <GoogleIcon className="size-5" />
-            {mode === 'login' ? 'Continue with Google' : 'Sign up with Google'}
-          </button>
-
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="h-px flex-1 bg-border/60" />
-            or {mode === 'login' ? 'sign in' : 'register'} with{' '}
-            {mode === 'login' ? 'your details' : 'username, phone & password'}
-            <span className="h-px flex-1 bg-border/60" />
-          </div>
 
           <AnimatePresence mode="wait">
             {mode === 'login' ? (
@@ -301,28 +274,5 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
         </form>
       </DialogContent>
     </Dialog>
-  )
-}
-
-function GoogleIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" aria-hidden="true">
-      <path
-        fill="#FFC107"
-        d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3l5.7-5.7C34.5 6.5 29.5 4.5 24 4.5 13.2 4.5 4.5 13.2 4.5 24S13.2 43.5 24 43.5 43.5 34.8 43.5 24c0-1.2-.1-2.3-.4-3.5z"
-      />
-      <path
-        fill="#FF3D00"
-        d="M6.3 14.7l6.6 4.8C14.6 16 18.9 13 24 13c3.1 0 5.9 1.2 8 3l5.7-5.7C34.5 6.5 29.5 4.5 24 4.5 16.3 4.5 9.6 8.8 6.3 14.7z"
-      />
-      <path
-        fill="#4CAF50"
-        d="M24 43.5c5.3 0 10.2-2 13.9-5.3l-6.4-5.4c-2 1.4-4.6 2.2-7.5 2.2-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.4 39.1 16.1 43.5 24 43.5z"
-      />
-      <path
-        fill="#1976D2"
-        d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.4 5.7l6.4 5.4C40.8 36.7 43.5 31 43.5 24c0-1.2-.1-2.3-.4-3.5z"
-      />
-    </svg>
   )
 }
