@@ -9,7 +9,7 @@ import { BuyPanel } from '@/components/game/buy-panel'
 import { LiveFeed, type FeedItem } from '@/components/game/live-feed'
 import { DepositModal } from '@/components/wallet/deposit-modal'
 import { Button } from '@/components/ui/button'
-import { Link } from 'wouter'
+import { Link, useLocation } from 'wouter'
 import { Sparkles, RefreshCw, History, ChevronRight, Flame, Bitcoin } from 'lucide-react'
 
 interface ActiveRound {
@@ -49,7 +49,22 @@ const WHATSAPP_GROUP_URL = import.meta.env.VITE_WHATSAPP_GROUP_URL || 'https://c
 
 export default function GamePage() {
   const { user, isLoading: authLoading, refreshUser } = useAuth()
+  const [, navigate] = useLocation()
   const [showAuthModal, setShowAuthModal] = useState(false)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('redirect') === '/admin') {
+      setShowAuthModal(true)
+      const url = new URL(window.location.href)
+      url.searchParams.delete('redirect')
+      window.history.replaceState({}, '', url.toString())
+    }
+  }, [])
+
+  const handleAuthSuccess = (loggedInUser: { is_admin: boolean }) => {
+    if (loggedInUser.is_admin) navigate('/admin')
+  }
   const [showDepositModal, setShowDepositModal] = useState(false)
   const [state, setState] = useState<EngineState | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -302,7 +317,7 @@ export default function GamePage() {
         <WhatsAppIcon className="size-7 text-white" />
       </a>
 
-      <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} />
+      <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} onSuccess={handleAuthSuccess} />
       <DepositModal open={showDepositModal} onOpenChange={setShowDepositModal} />
       <PayoutCelebration
         show={!!celebration}

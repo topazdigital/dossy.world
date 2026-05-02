@@ -33,9 +33,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         if (res.ok) {
           const data = await res.json()
           if (data.user?.is_admin) { setUser(data.user) }
-          else navigate('/ops-control-9f3a2b7c')
-        } else navigate('/ops-control-9f3a2b7c')
-      } catch { navigate('/ops-control-9f3a2b7c') }
+          else navigate('/')
+        } else navigate('/?redirect=/admin')
+      } catch { navigate('/?redirect=/admin') }
       finally { setIsLoading(false) }
     }
     checkAuth()
@@ -43,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const handleLogout = async () => {
     await fetch(`${apiBase()}/api/auth/logout`, { method: 'POST' })
-    navigate('/ops-control-9f3a2b7c')
+    navigate('/')
   }
 
   if (isLoading) return (

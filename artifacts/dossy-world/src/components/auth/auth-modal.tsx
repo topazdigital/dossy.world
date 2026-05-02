@@ -10,13 +10,14 @@ import { Loader2, User, Phone, Lock, Mail, ArrowRight, Sparkles } from 'lucide-r
 interface AuthModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  onSuccess?: (user: { id: string; username: string; is_admin: boolean }) => void
 }
 
 type AuthMode = 'login' | 'register'
 
 const apiBase = () => (import.meta as any).env.BASE_URL.replace(/\/$/, '')
 
-export function AuthModal({ open, onOpenChange }: AuthModalProps) {
+export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>('login')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -63,8 +64,13 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     try {
       if (mode === 'login') {
         const result = await login(identifier, password, rememberMe)
-        if (result.success) { resetForm(); onOpenChange(false) }
-        else setError(result.error || 'Login failed')
+        if (result.success) {
+          resetForm(); onOpenChange(false)
+          if (onSuccess) {
+            const me = await fetch(`${apiBase()}/api/auth/me`).then(r => r.ok ? r.json() : null)
+            if (me?.user) onSuccess(me.user)
+          }
+        } else setError(result.error || 'Login failed')
       } else {
         const result = await register({ username, phone: phone || undefined, email: email || undefined, password })
         if (result.success) { resetForm(); onOpenChange(false) }
