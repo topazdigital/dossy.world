@@ -220,11 +220,13 @@ async function readDB(): Promise<Database> {
 
 let cachedAdminHash: string | null = null
 async function ensureDefaultAdmin(db: Database): Promise<void> {
-  // Check every read so a wiped/rolled-back db file is healed automatically.
   if (db.users.some(u => u.is_admin)) return
+  const password = process.env.ADMIN_DEFAULT_PASSWORD
+  if (!password) {
+    console.warn('[db] No admin user exists and ADMIN_DEFAULT_PASSWORD is not set — skipping admin seed. Set the env var and restart to create an admin account.')
+    return
+  }
   const bcrypt = await import('bcryptjs')
-  const password = process.env.ADMIN_DEFAULT_PASSWORD || 'Dossy@Admin2026!'
-  // Cache the hash so we don't pay the bcrypt cost on every healing pass.
   if (!cachedAdminHash) cachedAdminHash = await bcrypt.hash(password, 10)
   const admin: User = {
     id: uuidv4(),
@@ -241,7 +243,7 @@ async function ensureDefaultAdmin(db: Database): Promise<void> {
   }
   db.users.push(admin)
   await fs.writeFile(DB_FILE, JSON.stringify(db, null, 2))
-  console.log('[db] (Re)seeded default admin user (username: admin)')
+  console.log('[db] Seeded admin user (username: admin) from ADMIN_DEFAULT_PASSWORD')
 }
 
 async function writeDB(db: Database): Promise<void> {
